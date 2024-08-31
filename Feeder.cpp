@@ -84,7 +84,7 @@ void FeederClass::setSettings(sFeederSettings UpdatedFeederSettings) {
 
 void FeederClass::loadFeederSettings() {
 	uint16_t adressOfFeederSettingsInEEPROM = EEPROM_FEEDER_SETTINGS_ADDRESS_OFFSET + this->feederNo * sizeof(this->feederSettings);
-	EEPROM.readBlock(adressOfFeederSettingsInEEPROM, this->feederSettings);
+	EEPROM.get(adressOfFeederSettingsInEEPROM, this->feederSettings);
 
 	#ifdef DEBUG
 		Serial.println(F("loaded settings from eeprom:"));
@@ -94,7 +94,7 @@ void FeederClass::loadFeederSettings() {
 
 void FeederClass::saveFeederSettings() {
 	uint16_t adressOfFeederSettingsInEEPROM = EEPROM_FEEDER_SETTINGS_ADDRESS_OFFSET + this->feederNo * sizeof(this->feederSettings);
-	EEPROM.writeBlock(adressOfFeederSettingsInEEPROM, this->feederSettings);
+	EEPROM.put(adressOfFeederSettingsInEEPROM, this->feederSettings);
 
 
 	#ifdef DEBUG

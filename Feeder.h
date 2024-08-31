@@ -5,7 +5,7 @@
 #include "config.h"
 #include "shield.h"
 #include <Servo.h>
-#include <EEPROMex.h>
+#include <EEPROM.h>
 
 
 

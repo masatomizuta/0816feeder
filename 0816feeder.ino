@@ -22,7 +22,7 @@
 
 // ------------------  I N C  L I B R A R I E S ---------------
 #include <HardwareSerial.h>
-#include <EEPROMex.h>
+#include <EEPROM.h>
 #include "Feeder.h"
 
 // ------------------  V A R  S E T U P -----------------------
@@ -171,7 +171,7 @@ void setup() {
 	executeCommandOnAllFeeder(cmdInitializeFeederWithId);
 
 	//load commonSettings from eeprom
-	EEPROM.readBlock(EEPROM_COMMON_SETTINGS_ADDRESS_OFFSET, commonSettings);
+	EEPROM.get(EEPROM_COMMON_SETTINGS_ADDRESS_OFFSET, commonSettings);
 
 	//factory reset on first start or version changing
 	if(strcmp(commonSettings.version,CONFIG_VERSION) != 0) {
@@ -181,7 +181,7 @@ void setup() {
 		executeCommandOnAllFeeder(cmdFactoryReset);
 
 		//update commonSettings in EEPROM to have no factory reset on next start
-		EEPROM.writeBlock(EEPROM_COMMON_SETTINGS_ADDRESS_OFFSET, commonSettings_default);
+		EEPROM.put(EEPROM_COMMON_SETTINGS_ADDRESS_OFFSET, commonSettings_default);
 	}
 
 	//print all settings to console
