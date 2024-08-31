@@ -1,3 +1,5 @@
+#include "config.h"
+
 String inputBuffer = "";         // Buffer for incoming G-Code lines
 
 
@@ -80,14 +82,18 @@ void processCommand() {
 			if( (_feederEnabled==0 || _feederEnabled==1) ) {
 
 				if((uint8_t)_feederEnabled==1) {
+#ifdef HAS_ENABLE_PIN
 					digitalWrite(FEEDER_ENABLE_PIN, HIGH);
+#endif
 					feederEnabled=ENABLED;
 
 					executeCommandOnAllFeeder(cmdEnable);
 
 					sendAnswer(0,F("Feeder set enabled and operational"));
 				} else {
+#ifdef HAS_ENABLE_PIN
 					digitalWrite(FEEDER_ENABLE_PIN, LOW);
+#endif
 					feederEnabled=DISABLED;
 
 					executeCommandOnAllFeeder(cmdDisable);

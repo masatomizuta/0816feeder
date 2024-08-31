@@ -153,16 +153,20 @@ void setup() {
 	Serial.println(F("Controller starting...")); Serial.flush();
 	Serial.println(F("Here is some stuff saved in EEPROM. Paste in a textfile to backup these settings...")); Serial.flush();
 
+#ifdef HAS_ENABLE_PIN
 	//feeder enable output
 	pinMode(FEEDER_ENABLE_PIN,OUTPUT);
 	digitalWrite(FEEDER_ENABLE_PIN,LOW);
+#endif
 
+#ifdef HAS_POWER_OUTPUTS
 	//power output init
 	for(uint8_t i=0;i<NUMBER_OF_POWER_OUTPUT;i++) {
 		pinMode(pwrOutputPinMap[i],OUTPUT);
 		digitalWrite(pwrOutputPinMap[i],LOW);
 	}
-	
+#endif
+
 	// setup listener to serial stream
 	setupGCodeProc();
 
@@ -188,12 +192,15 @@ void setup() {
 	printCommonSettings();
 
 	//setup feeder objects
+#ifdef HAS_ENABLE_PIN
   digitalWrite(FEEDER_ENABLE_PIN, HIGH);  //power feeder first, because while setup feeder might retract.
+#endif
 	executeCommandOnAllFeeder(cmdSetup);	//setup everything first, then power on short. made it this way to prevent servos from driving to an undefined angle while being initialized
 	delay(1000);		//have the last feeder's servo settled before disabling
   executeCommandOnAllFeeder(cmdDisable); //while setup ran, the feeder were moved and remain in sIDLE-state -> it shall be disabled
+#ifdef HAS_ENABLE_PIN
 	digitalWrite(FEEDER_ENABLE_PIN, LOW);	//disable power afterwards
-	
+#endif
 	//print all settings of every feeder to console
 	executeCommandOnAllFeeder(cmdOutputCurrentSettings);
 
