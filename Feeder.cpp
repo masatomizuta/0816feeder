@@ -53,6 +53,7 @@ void FeederClass::setup() {
 	this->loadFeederSettings();
 
 	//attach servo to pin, after settings are loaded
+	this->servo.detach();
 	this->servo.attach(feederPinMap[this->feederNo],this->feederSettings.motor_min_pulsewidth,this->feederSettings.motor_max_pulsewidth);
 
 	//feedback input
