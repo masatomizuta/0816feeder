@@ -235,9 +235,28 @@ void processCommand() {
 		case MCODE_UPDATE_FEEDER_CONFIG: {
 			int8_t signedFeederNo = (int)parseParameter('N',-1);
 
+			if (signedFeederNo == -1) {
+				executeCommandOnAllFeeder(cmdOutputCurrentSettings);
+				sendAnswer(0, F("All feeders config printed."));
+				break;
+			}
+
 			//check for presence of FeederNo
 			if(!validFeederNo(signedFeederNo,1)) {
 				sendAnswer(1,F("feederNo missing or invalid"));
+				break;
+			}
+
+			if (inputBuffer.indexOf('A') == -1 &&
+				inputBuffer.indexOf('B') == -1 &&
+				inputBuffer.indexOf('C') == -1 &&
+				inputBuffer.indexOf('F') == -1 &&
+				inputBuffer.indexOf('U') == -1 &&
+				inputBuffer.indexOf('V') == -1 &&
+				inputBuffer.indexOf('W') == -1 &&
+				inputBuffer.indexOf('X') == -1) {
+				feeders[(uint8_t)signedFeederNo].outputCurrentSettings();
+				sendAnswer(0, F("Feeder config printed."));
 				break;
 			}
 
