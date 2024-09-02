@@ -1,16 +1,16 @@
-#ifndef _SHIELD_h
-#define _SHIELD_h
+#ifndef _SHIELD_H
+#define _SHIELD_H
+
 #include "shields_def.h"
 
 #if SHIELD(NATIVE)
-  #include "shield_native.h"
+#include "shield_native.h"
 #elif SHIELD(SENSOR)
-  #include "shield_sensor.h"
+#include "shield_sensor.h"
 #elif SHIELD(UNO)
-  #include "shield_uno.h"
+#include "shield_uno.h"
 #else
-  #error "invalid board, please select a proper shield"
+#error "invalid board, please select a proper shield"
 #endif
 
-//DEFINE _SHIELD_h-ENDIF!!!
-#endif
+#endif // _SHIELD_H

@@ -1,12 +1,10 @@
-#ifndef _SHIELDS_h
-#define _SHIELDS_h
+#ifndef _SHIELDS_DEF_H
+#define _SHIELDS_DEF_H
 
-#define SHIELD_NATIVE       1
-#define SHIELD_SENSOR       2
-#define SHIELD_UNO          3
+#define SHIELD_NATIVE 1
+#define SHIELD_SENSOR 2
+#define SHIELD_UNO    3
 
-#define SHIELD(shield) (CONTROLLER_SHIELD==SHIELD_##shield)
+#define SHIELD(shield) (CONTROLLER_SHIELD == SHIELD_##shield)
 
-
-//DEFINE _SHIELDS_h-ENDIF!!!
-#endif
+#endif // _SHIELDS_DEF_H
