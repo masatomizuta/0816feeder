@@ -278,6 +278,7 @@ void processCommand()
         feeders[(uint8_t)signedFeederNo].setup();
 
         // confirm
+        feeders[(uint8_t)signedFeederNo].outputCurrentSettings();
         sendAnswer(0, F("Feeders config updated."));
 
         break;
