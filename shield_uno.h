@@ -1,7 +1,7 @@
 /*
  * capabilities
  */
-#define NUMBER_OF_FEEDER 18
+#define NUMBER_OF_FEEDER 12
 #define NO_ENABLE_PIN
 #define NO_FEEDBACKLINES
 #define NO_ANALOG_IN
@@ -23,10 +23,4 @@ const static uint8_t feederPinMap[NUMBER_OF_FEEDER] = {
     11,
     12,
     13,
-    A0,
-    A1,
-    A2,
-    A3,
-    A4,
-    A5,
 };
