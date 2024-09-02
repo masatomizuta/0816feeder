@@ -3,10 +3,15 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
-#include <Servo.h>
 
 #include "config.h"
 #include "shield.h"
+
+#ifdef HAS_I2C_SERVO
+#include "I2CServo.h"
+#else
+#include <Servo.h>
+#endif // HAS_I2C_SERVO
 
 class FeederClass
 {
@@ -81,7 +86,11 @@ class FeederClass
 #endif
     };
 
+#ifdef HAS_I2C_SERVO
+    I2CServo servo;
+#else
     Servo servo;
+#endif // HAS_I2C_SERVO
 
     void initialize(uint8_t _feederNo);
     bool isInitialized();
@@ -108,6 +117,8 @@ class FeederClass
     void disable();
 
     void update();
+
+    static bool begin();
 };
 
 extern FeederClass Feeder;

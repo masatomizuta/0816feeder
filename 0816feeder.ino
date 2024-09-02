@@ -159,6 +159,10 @@ void setup()
     Serial.println(F("Here is some stuff saved in EEPROM. Paste in a textfile to backup these settings..."));
     Serial.flush();
 
+    if (!Feeder.begin()) {
+        Serial.println(F("Feeder is not ready."));
+    };
+
 #ifdef HAS_ENABLE_PIN
     // feeder enable output
     pinMode(FEEDER_ENABLE_PIN, OUTPUT);

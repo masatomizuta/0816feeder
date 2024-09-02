@@ -453,3 +453,12 @@ void FeederClass::update()
 
     return;
 }
+
+bool FeederClass::begin()
+{
+#ifdef HAS_I2C_SERVO
+    return I2CServo::begin();
+#else
+    return true;
+#endif
+}

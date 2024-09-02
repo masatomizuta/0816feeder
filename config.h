@@ -14,7 +14,7 @@
  *  Select controller shield
  */
 // defaults to the native shield, optional sensor shield can be selected
-#define CONTROLLER_SHIELD SHIELD_NATIVE // SHIELD_NATIVE or SHIELD_SENSOR
+#define CONTROLLER_SHIELD SHIELD_I2C // Choose shield type
 // change config_version, if change shield!
 
 /*
