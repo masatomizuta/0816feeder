@@ -84,6 +84,7 @@ void I2CServo::writeMicroseconds(int value)
         value = this->max;
     }
     pwm.writeMicroseconds(this->pin, value);
+    this->pulse_width = value;
 }
 
 int I2CServo::read() // return the value as degrees

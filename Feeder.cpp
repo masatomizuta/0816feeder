@@ -162,9 +162,24 @@ void FeederClass::gotoFullAdvancedPosition()
 #endif
 }
 
-void FeederClass::gotoAngle(uint8_t angle)
+void FeederClass::gotoAngle(uint8_t angle, int min, int max)
 {
+    // Temporary change min max pulse width
+    if (min == -1) {
+        min = this->feederSettings.motor_min_pulsewidth;
+    }
+    if (max == -1) {
+        max = this->feederSettings.motor_max_pulsewidth;
+    }
+    this->servo.detach();
+    this->servo.attach(feederPinMap[this->feederNo], min, max);
+
+    // Set servo angle
     this->servo.write(angle);
+
+    // Restore
+    this->servo.detach();
+    this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
 
 #ifdef DEBUG
     Serial.print("going to ");

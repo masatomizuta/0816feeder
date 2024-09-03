@@ -205,21 +205,25 @@ void processCommand()
             break;
         }
 
+        // FeederNo
         int8_t signedFeederNo = (int)parseParameter('N', -1);
-        uint8_t angle = (int)parseParameter('A', 90);
-
-        // check for presence of FeederNo
         if (!validFeederNo(signedFeederNo, 1)) {
             sendAnswer(1, F("feederNo missing or invalid"));
             break;
         }
-        // check for valid angle
+
+        // Angle
+        uint8_t angle = (int)parseParameter('A', 90);
         if (angle > 180) {
             sendAnswer(1, F("illegal angle"));
             break;
         }
 
-        feeders[(uint8_t)signedFeederNo].gotoAngle(angle);
+        // Min & Max pulse width
+        int min = (int)parseParameter('V', -1);
+        int max = (int)parseParameter('W', -1);
+
+        feeders[(uint8_t)signedFeederNo].gotoAngle(angle, min, max);
 
         sendAnswer(0, F("angle set"));
 

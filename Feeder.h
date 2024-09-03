@@ -107,7 +107,7 @@ class FeederClass
     void gotoRetractPosition();
     void gotoHalfAdvancedPosition();
     void gotoFullAdvancedPosition();
-    void gotoAngle(uint8_t angle);
+    void gotoAngle(uint8_t angle, int min = -1, int max = -1);
     bool advance(uint8_t feedLength, bool overrideError);
 
     String reportFeederErrorState();
