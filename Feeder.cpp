@@ -397,7 +397,7 @@ void FeederClass::update()
 
         // now servo is expected to have settled at its designated position, so do some stuff
         if (this->feederState == sADVANCING_CYCLE_COMPLETED) {
-            Serial.println("ok, advancing cycle completed");
+            Serial.println("ok");
             this->feederState = sIDLE;
         }
 

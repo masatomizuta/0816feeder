@@ -179,7 +179,7 @@ void processCommand()
 
         feeders[(uint8_t)signedFeederNo].gotoPostPickPosition();
 
-        sendAnswer(0, F("feeder postPickRetract done if needed"));
+        sendAnswer(0, F(""));
 
         break;
     }
