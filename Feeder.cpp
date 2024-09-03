@@ -57,10 +57,6 @@ void FeederClass::setup()
     // load settings from eeprom
     this->loadFeederSettings();
 
-    // attach servo to pin, after settings are loaded
-    this->servo.detach();
-    this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
-
     // feedback input
     // microswitch is active low (NO connected to feedback-pin)
 #ifdef HAS_FEEDBACKLINES
@@ -69,9 +65,6 @@ void FeederClass::setup()
 
     this->lastButtonState = digitalRead(feederFeedbackPinMap[this->feederNo]);
 #endif
-
-    // put on defined position
-    this->gotoRetractPosition();
 }
 
 FeederClass::sFeederSettings FeederClass::getSettings()
@@ -309,12 +302,21 @@ String FeederClass::reportFeederErrorState()
 // called when M-Code to enable feeder is issued
 void FeederClass::enable()
 {
+    // attach servo to pin, after settings are loaded
+    this->servo.detach();
+    this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
+
+    // put on defined position
+    this->gotoRetractPosition();
+
     this->feederState = sIDLE;
 }
 
 // called when M-Code to disable feeder is issued
 void FeederClass::disable()
 {
+    this->servo.detach();
+
     this->feederState = sDISABLED;
 }
 
