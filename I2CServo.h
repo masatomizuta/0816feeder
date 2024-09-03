@@ -25,7 +25,7 @@ class I2CServo
     int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
     bool attached();                   // return true if this servo is attached, otherwise false
 
-    static bool begin();
+    static bool begin(bool enableExtclk = true);
 
   private:
     uint8_t pin; // pin number for this servo

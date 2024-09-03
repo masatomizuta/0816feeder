@@ -6,11 +6,24 @@ static Adafruit_PWMServoDriver pwm;
 
 bool I2CServo::is_attached[MAX_SERVOS] = {false};
 
-bool I2CServo::begin()
+static void enableClockOut()
 {
-    pwm.begin();
-    pwm.setOscillatorFrequency(25000000);
-    pwm.setPWMFreq(REFRESH_FREQ);
+    TCCR1A = _BV(COM1A0);            // toggle OC1A on Compare Match
+    TCCR1B = _BV(WGM12) | _BV(CS10); // CTC, no prescaler
+    OCR1A = 9;
+    pinMode(9, OUTPUT);
+}
+
+bool I2CServo::begin(bool enableExtclk)
+{
+    if (enableExtclk) {
+        enableClockOut();
+        pwm.begin(3);
+        pwm.setOscillatorFrequency(800000);
+    } else {
+        pwm.begin();
+        pwm.setPWMFreq(REFRESH_FREQ);
+    }
 }
 
 I2CServo::I2CServo() : pin(INVALID_SERVO), pulse_width(DEFAULT_PULSE_WIDTH)

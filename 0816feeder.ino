@@ -161,7 +161,7 @@ void setup()
 
     if (!Feeder.begin()) {
         Serial.println(F("Feeder is not ready."));
-    };
+    }
 
 #ifdef HAS_ENABLE_PIN
     // feeder enable output
