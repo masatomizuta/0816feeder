@@ -99,6 +99,7 @@ void executeCommandOnAllFeeder(eFeederCommands command)
             break;
         case cmdEnable:
             feeders[i].enable();
+            delay(feeders[i].getSettings().time_to_settle / 4); // Reduce current spike
             break;
         case cmdDisable:
             feeders[i].disable();
