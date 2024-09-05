@@ -57,6 +57,14 @@ void FeederClass::setup()
     // load settings from eeprom
     this->loadFeederSettings();
 
+    // temporary attach servo to pin, after settings are loaded
+    bool is_attached = this->servo.attached();
+    this->servo.detach();
+    this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
+    if (!is_attached) {
+        this->servo.detach();
+    }
+
     // feedback input
     // microswitch is active low (NO connected to feedback-pin)
 #ifdef HAS_FEEDBACKLINES
