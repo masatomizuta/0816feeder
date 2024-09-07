@@ -1,4 +1,6 @@
+#include "Feeder.h"
 #include "config.h"
+#include "shield.h"
 
 String inputBuffer = ""; // Buffer for incoming G-Code lines
 
@@ -42,19 +44,7 @@ void sendAnswer(uint8_t error, String message)
 
 bool validFeederNo(int8_t signedFeederNo, uint8_t feederNoMandatory = 0)
 {
-    if (signedFeederNo == -1 && feederNoMandatory >= 1) {
-        // no number given (-1) but it is mandatory.
-        return false;
-    } else {
-        // state now: number is given, check for valid range
-        if (signedFeederNo < 0 || signedFeederNo > (NUMBER_OF_FEEDER - 1)) {
-            // error, number not in a valid range
-            return false;
-        } else {
-            // perfectly fine number
-            return true;
-        }
-    }
+    return (signedFeederNo == -1 && feederNoMandatory == 0) || (signedFeederNo >= 0 && signedFeederNo < NUMBER_OF_FEEDER);
 }
 
 /**
@@ -153,11 +143,13 @@ void processCommand()
         if (!triggerFeedOK) {
             // report error to host at once, tape was not advanced...
             sendAnswer(1, F("feeder not OK (not activated, no tape or tension of cover tape not OK)"));
-        } else {
-            // answer OK to host in case there was no error -> NO, no answer now:
-            // wait to send OK, until feed process finished. otherwise the pickup is started immediately, thus too early.
-            // message is fired off in feeder.cpp
+            break;
         }
+
+        // store last used feederNo for M400 command
+        FeederClass::completionAnswerFeederNo = signedFeederNo;
+
+        sendAnswer(0, F(""));
 
         break;
     }
@@ -284,6 +276,44 @@ void processCommand()
         // confirm
         feeders[(uint8_t)signedFeederNo].outputCurrentSettings();
         sendAnswer(0, F("Feeders config updated."));
+
+        break;
+    }
+
+    case MCODE_WAIT_ADVANCE: {
+        if (feederEnabled != ENABLED) {
+            sendAnswer(0, F(""));
+            return;
+        }
+
+        if (FeederClass::completionAnswerRequested) {
+            sendAnswer(1, F("already requested"));
+            return;
+        }
+
+        int8_t signedFeederNo = (int)parseParameter('N', -1);
+        if (!validFeederNo(signedFeederNo, 0)) {
+            sendAnswer(1, F("feederNo invalid"));
+            return;
+        }
+
+        if (signedFeederNo != -1) {
+            // Request completion answer for specific feeder if it is not idle
+            if (feeders[signedFeederNo].feederState != FeederClass::sFeederState::sIDLE) {
+                FeederClass::completionAnswerRequested = true;
+                FeederClass::completionAnswerFeederNo = signedFeederNo;
+                return;
+            }
+        } else {
+            // Request completion answer for last feeder advanced if it is not idle
+            if (feeders[FeederClass::completionAnswerFeederNo].feederState != FeederClass::sFeederState::sIDLE) {
+                FeederClass::completionAnswerRequested = true;
+                return;
+            }
+        }
+
+        // No need to wait
+        sendAnswer(0, F(""));
 
         break;
     }

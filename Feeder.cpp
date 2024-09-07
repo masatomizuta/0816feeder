@@ -1,6 +1,10 @@
 #include "Feeder.h"
 #include "config.h"
 
+bool FeederClass::completionAnswerRequested = false;
+
+int FeederClass::completionAnswerFeederNo = -1;
+
 bool FeederClass::isInitialized()
 {
     if (this->feederNo == -1)
@@ -407,7 +411,11 @@ void FeederClass::update()
 
         // now servo is expected to have settled at its designated position, so do some stuff
         if (this->feederState == sADVANCING_CYCLE_COMPLETED) {
-            Serial.println("ok");
+            if (FeederClass::completionAnswerRequested && this->feederNo == FeederClass::completionAnswerFeederNo) {
+                Serial.print("ok feederNo");
+                Serial.println(this->feederNo);
+                FeederClass::completionAnswerRequested = false;
+            }
             this->feederState = sIDLE;
         }
 

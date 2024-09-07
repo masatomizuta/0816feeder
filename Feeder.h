@@ -86,6 +86,10 @@ class FeederClass
 #endif
     };
 
+    // flag for completion answer for M400
+    static bool completionAnswerRequested;
+    static int completionAnswerFeederNo;
+
 #ifdef HAS_I2C_SERVO
     I2CServo servo;
 #else
