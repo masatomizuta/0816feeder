@@ -99,7 +99,6 @@ void executeCommandOnAllFeeder(eFeederCommands command)
             break;
         case cmdEnable:
             feeders[i].enable();
-            delay(feeders[i].getSettings().time_to_settle / 4); // Reduce current spike
             break;
         case cmdDisable:
             feeders[i].disable();
@@ -115,6 +114,14 @@ void executeCommandOnAllFeeder(eFeederCommands command)
             break;
         default:
             break;
+        }
+    }
+
+    // TODO: fix to better implementation
+    if (command == cmdDisable) {
+        delay(100);
+        for (uint8_t i = 0; i < NUMBER_OF_FEEDER; i++) {
+            feeders[i].servo.detach();
         }
     }
 }
@@ -206,9 +213,7 @@ void setup()
 #ifdef HAS_ENABLE_PIN
     digitalWrite(FEEDER_ENABLE_PIN, HIGH); // power feeder first, because while setup feeder might retract.
 #endif
-    executeCommandOnAllFeeder(cmdSetup);   // setup everything first, then power on short. made it this way to prevent servos from driving to an undefined angle while being initialized
-    delay(1000);                           // have the last feeder's servo settled before disabling
-    executeCommandOnAllFeeder(cmdDisable); // while setup ran, the feeder were moved and remain in sIDLE-state -> it shall be disabled
+    executeCommandOnAllFeeder(cmdSetup); // setup everything first, then power on short. made it this way to prevent servos from driving to an undefined angle while being initialized
 #ifdef HAS_ENABLE_PIN
     digitalWrite(FEEDER_ENABLE_PIN, LOW); // disable power afterwards
 #endif

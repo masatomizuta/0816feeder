@@ -169,22 +169,28 @@ void FeederClass::gotoFullAdvancedPosition()
 
 void FeederClass::gotoAngle(uint8_t angle, int min, int max)
 {
-    // Temporary change min max pulse width
-    if (min == -1) {
-        min = this->feederSettings.motor_min_pulsewidth;
+    bool override_min_max = (min != -1 || max != -1);
+
+    // Temporary override min max pulse width if requested
+    if (override_min_max) {
+        if (min == -1) {
+            min = this->feederSettings.motor_min_pulsewidth;
+        }
+        if (max == -1) {
+            max = this->feederSettings.motor_max_pulsewidth;
+        }
+        this->servo.detach();
+        this->servo.attach(feederPinMap[this->feederNo], min, max);
     }
-    if (max == -1) {
-        max = this->feederSettings.motor_max_pulsewidth;
-    }
-    this->servo.detach();
-    this->servo.attach(feederPinMap[this->feederNo], min, max);
 
     // Set servo angle
     this->servo.write(angle);
 
-    // Restore
-    this->servo.detach();
-    this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
+    // Restore if requested
+    if (override_min_max) {
+        this->servo.detach();
+        this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
+    }
 
 #ifdef DEBUG
     Serial.print("going to ");
@@ -319,7 +325,7 @@ void FeederClass::enable()
     this->servo.attach(feederPinMap[this->feederNo], this->feederSettings.motor_min_pulsewidth, this->feederSettings.motor_max_pulsewidth);
 
     // put on defined position
-    this->gotoRetractPosition();
+    this->gotoFullAdvancedPosition();
 
     this->feederState = sIDLE;
 }
@@ -327,7 +333,8 @@ void FeederClass::enable()
 // called when M-Code to disable feeder is issued
 void FeederClass::disable()
 {
-    this->servo.detach();
+    // put on defined position
+    this->gotoAngle(this->getSettings().half_advanced_angle);
 
     this->feederState = sDISABLED;
 }
