@@ -205,9 +205,15 @@ void processCommand()
         }
 
         // Angle
-        uint8_t angle = (int)parseParameter('A', 90);
-        if (angle > 180) {
-            sendAnswer(1, F("illegal angle"));
+        uint8_t angle = (int)parseParameter('A', -1);
+        if (angle == -1) {
+            angle = (int)parseParameter('B', -1);
+        } else if (angle == -1) {
+            angle = (int)parseParameter('C', -1);
+        }
+
+        if (angle < 0 || angle > 180) {
+            sendAnswer(1, F("angle missing or invalid"));
             break;
         }
 
